@@ -1,0 +1,65 @@
+name: Deploy Azure
+
+# Neue Version (Tag v*) -> Tests mit echter Datenbank -> Auslieferung auf Azure
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: razayou-notizen
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: notizen
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://postgres:test@localhost:5432/notizen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: azure
+      url: ${{ steps.deploy.outputs.webapp-url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      # Nur was der Server braucht
+      - run: |
+          npm prune --omit=dev
+          mkdir deploy
+          cp -r server dist node_modules package.json deploy/
+      - id: deploy
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: deploy
+      - name: Health-Check
+        run: |
+          for i in $(seq 1 20); do
+            curl -sf "${{ steps.deploy.outputs.webapp-url }}/api/health" && exit 0
+            sleep 15
+          done
+          exit 1
