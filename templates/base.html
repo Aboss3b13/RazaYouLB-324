@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notizen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <main class="app">
+      <h1><a href="{{ url_for('index') }}">Meine Notizen</a></h1>
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>
