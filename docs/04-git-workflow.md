@@ -8,51 +8,89 @@
 | **SVN** | zentral | ein zentraler Server, älter |
 | **Mercurial** | verteilt | ähnlich wie Git, weniger verbreitet |
 
-Plattformen für Git: **GitHub**, GitLab, Bitbucket.
+Plattformen für Git: **GitHub**, GitLab, Bitbucket, Azure Repos.
 
-## Unser Workflow (Feature-Branch)
+## Grundbefehle
 
-1. Issue / User Story auswählen (z.B. US-03).
-2. Neuen Branch erstellen:
+| Befehl | Was passiert |
+| --- | --- |
+| `git status` / `git status -s` | Zeigt geänderte Dateien |
+| `git add datei` | Datei in die Staging Area |
+| `git commit -m "..."` | Staging Area als Commit ins Repository |
+| `git commit -am "..."` | Alle geänderten (bekannten) Dateien direkt committen |
+| `git push` / `git pull` | Mit GitHub abgleichen |
+
+## Unser Workflow (GitHub Flow)
+
+Wir arbeiten zu zweit: **Abbas Raza** (`Aboss3b13`, Besitzer) und **Yucan You** (`mikepro100223`, Collaborator).
+
+1. Issue auswählen oder erstellen (z.B. #6).
+2. Branch mit Issue-Nummer erstellen:
    ```bash
    git checkout main
    git pull
-   git checkout -b feature/us-03-bearbeiten
+   git checkout -b feature/6-datenbank
    ```
-3. Code + Test schreiben, kleine Commits machen:
+3. Zuerst den Test, dann den Code schreiben. Kleine Commits mit Issue-Nummer:
    ```bash
-   git commit -m "US-03: Notiz bearbeiten"
+   git commit -m "REST-API mit PostgreSQL #6"
    ```
-4. Branch pushen: `git push -u origin feature/us-03-bearbeiten`
-5. **Pull Request** auf GitHub erstellen (`Closes #<Issue>`).
+   Der `pre-commit`-Hook prüft Lint und Tests, der `commit-msg`-Hook die Issue-Nummer.
+4. Branch pushen: `git push -u origin feature/6-datenbank`
+5. **Pull Request** auf GitHub erstellen (`Closes #6`).
 6. CI läuft automatisch → muss grün sein.
-7. Teampartner macht ein **Review**.
-8. Merge in `main` → automatisches Deployment.
+7. Die **andere Person** macht das Review (kommentieren, gutheissen).
+8. **Rebase and merge** in `main`, Branch wird automatisch gelöscht.
 
-## Commit-Regeln
+### Einstellungen im Repository (Auftrag 2031)
 
-- Kurz und klar, auf Deutsch.
-- Mit ID der User Story, wenn möglich: `US-05: Suche`.
+- Issues aktiviert
+- Pull Requests: nur **Rebase merging** erlaubt, *Automatically delete head branches*
+- Branch-Schutz für `main`: *Require a pull request before merging*, *Do not allow bypassing*,
+  Status-Check **CI** muss grün sein
+
+### Merge-Konflikte
+
+Wenn zwei PRs dieselbe Stelle ändern, zeigt GitHub einen Konflikt. Lösen:
+im Browser mit *Resolve conflicts* oder lokal:
+
+```bash
+git checkout feature/x
+git pull --rebase origin main
+# Konflikt in der Datei bereinigen, dann:
+git add datei
+git rebase --continue
+git push --force-with-lease
+```
+
+## Semantische Versionierung
+
+Versionen heissen `vMAJOR.MINOR.PATCH`:
+
+- **MAJOR** – inkompatible Änderung (z.B. `v2.0.0`: Umstieg auf Server + Datenbank)
+- **MINOR** – neue Funktion, kompatibel
+- **PATCH** – Fehlerbehebung
 
 ## Artefaktverwaltung
 
-Ein **Artefakt** ist das Ergebnis vom Build (z.B. `dist/`-Ordner, ZIP, Docker-Image).
+Ein **Artefakt** ist das Ergebnis vom Build.
 
 | Artefakt | Wo | Wann |
 | --- | --- | --- |
 | `dist/` als Build-Artefakt | GitHub Actions (Tab *Actions*) | bei jedem CI-Lauf |
 | ZIP-Datei | GitHub **Releases** | bei jedem Tag `v*` |
 | Docker-Image | GitHub **Packages** (`ghcr.io`) | bei jedem Tag `v*` |
+| Laufende App | **Azure** Web App | bei jedem Tag `v*` |
 
 Neue Version erstellen:
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag -a v2.0.0 -m "Server und Datenbank"
+git push origin v2.0.0
 ```
 
-Das Docker-Image kann dann so gestartet werden:
+Das Docker-Image starten:
 
 ```bash
-docker run -p 8080:80 ghcr.io/aboss3b13/razayoulb-324:latest
+docker run -p 3000:3000 ghcr.io/aboss3b13/razayoulb-324:latest
 ```
