@@ -23,6 +23,7 @@ az webapp create -g "$RG" -p "$PLAN" -n "$APP" --runtime "NODE:22-lts" -o none
 az webapp config set -g "$RG" -n "$APP" --startup-file "node server/index.js" -o none
 
 echo "3/5 PostgreSQL (dauert ca. 5-10 Minuten)"
+az provider register --namespace Microsoft.DBforPostgreSQL --wait
 az postgres flexible-server create -g "$RG" -n "$DB" -l "$LOC" \
   --tier Burstable --sku-name Standard_B1ms --storage-size 32 --version 16 \
   --admin-user "$DBUSER" --admin-password "$DBPASS" \
