@@ -1,7 +1,8 @@
 ---
-name: User Story
-about: Neue Anforderung erfassen
-labels: user-story
+name: User story
+about: Submit a new requirement for this project
+title: Als <Rolle> möchte ich <etwas>, damit <Nutzen>
+labels: 'type: user story, status: new issue'
 ---
 
 **Als** [Rolle]
@@ -13,6 +14,6 @@ labels: user-story
 - [ ] ...
 - [ ] ...
 
-### Test
+### Testfall
 
-Welcher Testfall prüft diese Anforderung?
+Welcher automatische Test prüft diese Anforderung?
