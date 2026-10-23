@@ -13,7 +13,7 @@ Betroffene Bereiche:
 - **Build** – Anwendung automatisch bauen (Vite)
 - **Test** – Tests automatisch ausführen (Vitest)
 - **Release** – Artefakte erstellen (ZIP, Docker-Image)
-- **Deployment** – Anwendung automatisch ausliefern (GitHub Pages)
+- **Deployment** – Anwendung automatisch ausliefern (Azure App Service + PostgreSQL)
 - **Betrieb & Monitoring** – Anwendung überwachen, Feedback sammeln
 
 ## Warum ist DevOps wichtig?
