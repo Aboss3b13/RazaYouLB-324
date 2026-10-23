@@ -24,11 +24,15 @@ az webapp config set -g "$RG" -n "$APP" --startup-file "node server/index.js" -o
 
 echo "3/5 PostgreSQL (dauert ca. 5-10 Minuten)"
 az provider register --namespace Microsoft.DBforPostgreSQL --wait
-az postgres flexible-server create -g "$RG" -n "$DB" -l "$LOC" \
-  --tier Burstable --sku-name Standard_B1ms --storage-size 32 --version 16 \
-  --admin-user "$DBUSER" --admin-password "$DBPASS" \
-  --public-access 0.0.0.0 --yes -o none
-az postgres flexible-server db create -g "$RG" -s "$DB" -d "$DBNAME" -o none
+if ! az postgres flexible-server show -g "$RG" -n "$DB" -o none 2>/dev/null; then
+  az postgres flexible-server create -g "$RG" -n "$DB" -l "$LOC" \
+    --tier Burstable --sku-name Standard_B1ms --storage-size 32 --version 16 \
+    --admin-user "$DBUSER" --admin-password "$DBPASS" \
+    --public-access 0.0.0.0 --yes -o none
+fi
+# Passwort immer neu setzen, damit es zu den App Settings passt (Skript ist wiederholbar)
+az postgres flexible-server update -g "$RG" -n "$DB" --admin-password "$DBPASS" -o none
+az postgres flexible-server db create -g "$RG" -s "$DB" -n "$DBNAME" -o none
 
 echo "4/5 Verbindung als App Settings (Geheimnisse) eintragen"
 az webapp config appsettings set -g "$RG" -n "$APP" -o none --settings \
