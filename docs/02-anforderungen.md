@@ -14,13 +14,13 @@
 
 ## User Stories
 
-| ID | User Story | Test |
-| --- | --- | --- |
-| US-01 | Als Benutzer möchte ich eine Notiz mit Titel und Text erstellen, damit ich Ideen festhalten kann. | `notes.test.js`, `app.integration.test.js` |
-| US-02 | Als Benutzer möchte ich, dass meine Notizen gespeichert bleiben, damit sie nach dem Neuladen noch da sind. | `app.integration.test.js` |
-| US-03 | Als Benutzer möchte ich eine Notiz bearbeiten, damit ich Fehler korrigieren kann. | `notes.test.js`, `app.integration.test.js` |
-| US-04 | Als Benutzer möchte ich eine Notiz löschen, damit die Liste übersichtlich bleibt. | `notes.test.js`, `app.integration.test.js` |
-| US-05 | Als Benutzer möchte ich Notizen durchsuchen, damit ich sie schnell finde. | `notes.test.js`, `app.integration.test.js` |
+| ID | Issue | User Story | Test |
+| --- | --- | --- | --- |
+| US-01 | #1 | Als Benutzer möchte ich eine Notiz mit Titel und Text erstellen, damit ich Ideen festhalten kann. | `notes.test.js`, `app.integration.test.js` |
+| US-02 | #2 | Als Benutzer möchte ich, dass meine Notizen gespeichert bleiben, damit sie nach dem Neuladen noch da sind. | `app.integration.test.js` |
+| US-03 | #3 | Als Benutzer möchte ich eine Notiz bearbeiten, damit ich Fehler korrigieren kann. | `notes.test.js`, `app.integration.test.js` |
+| US-04 | #4 | Als Benutzer möchte ich eine Notiz löschen, damit die Liste übersichtlich bleibt. | `notes.test.js`, `app.integration.test.js` |
+| US-05 | #5 | Als Benutzer möchte ich Notizen durchsuchen, damit ich sie schnell finde. | `notes.test.js`, `app.integration.test.js` |
 
 Jede User Story wird als **GitHub Issue** (Vorlage: `.github/ISSUE_TEMPLATE/user-story.md`)
 erfasst und auf dem **GitHub Project Board** (To Do → In Arbeit → Erledigt) verwaltet.
