@@ -26,12 +26,18 @@ echo "3/5 PostgreSQL (dauert ca. 5-10 Minuten)"
 az postgres flexible-server create -g "$RG" -n "$DB" -l "$LOC" \
   --tier Burstable --sku-name Standard_B1ms --storage-size 32 --version 16 \
   --admin-user "$DBUSER" --admin-password "$DBPASS" \
-  --public-access 0.0.0.0 --database-name "$DBNAME" --yes -o none
+  --public-access 0.0.0.0 --yes -o none
+az postgres flexible-server db create -g "$RG" -s "$DB" -d "$DBNAME" -o none
 
 echo "4/5 Verbindung als App Settings (Geheimnisse) eintragen"
 az webapp config appsettings set -g "$RG" -n "$APP" -o none --settings \
   DBHOST="$DB.postgres.database.azure.com:5432" DBNAME="$DBNAME" \
   DBUSER="$DBUSER" DBPASS="$DBPASS" DBSSL=require
 
-echo "5/5 Fertig"
+echo "5/5 Publish-Profil für GitHub Actions erlauben"
+SUB=$(az account show --query id -o tsv)
+az resource update -o none --set properties.allow=true \
+  --ids "/subscriptions/$SUB/resourceGroups/$RG/providers/Microsoft.Web/sites/$APP/basicPublishingCredentialsPolicies/scm"
+
+echo "Fertig"
 echo "URL: https://$(az webapp show -g "$RG" -n "$APP" --query defaultHostName -o tsv)"
