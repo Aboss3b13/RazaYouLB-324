@@ -40,12 +40,15 @@ Wir arbeiten zu zweit: **Abbas Raza** (`Aboss3b13`, Besitzer) und **Yucan You** 
 5. **Pull Request** auf GitHub erstellen (`Closes #6`).
 6. CI läuft automatisch → muss grün sein.
 7. Die **andere Person** macht das Review (kommentieren, gutheissen).
-8. **Rebase and merge** in `main`, Branch wird automatisch gelöscht.
+8. **Merge pull request** in `main`, Branch wird automatisch gelöscht.
+
+Bauen PRs aufeinander auf (z.B. #6 braucht die Hooks aus #8), zeigt der zweite PR auf den
+Branch des ersten (*gestapelte PRs*). Nach dem Merge stellt GitHub die Basis automatisch auf `main` um.
 
 ### Einstellungen im Repository (Auftrag 2031)
 
 - Issues aktiviert
-- Pull Requests: nur **Rebase merging** erlaubt, *Automatically delete head branches*
+- Pull Requests: *Merge commits* erlaubt (für gestapelte PRs), *Automatically delete head branches*
 - Branch-Schutz für `main`: *Require a pull request before merging*, *Do not allow bypassing*,
   Status-Check **CI** muss grün sein
 
