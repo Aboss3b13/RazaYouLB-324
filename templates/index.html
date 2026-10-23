@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="{{ url_for('add') }}" method="post" class="card">
+  <input name="title" placeholder="Titel" required maxlength="100" />
+  <textarea name="text" placeholder="Notiz schreiben..." rows="4"></textarea>
+  <button type="submit">Speichern</button>
+</form>
+
+<form action="{{ url_for('index') }}" method="get" class="row">
+  <input name="q" type="search" placeholder="Suchen..." value="{{ query }}" />
+  <button type="submit" class="secondary">Suchen</button>
+  <a class="button secondary" href="{{ url_for('download') }}">CSV</a>
+</form>
+
+<ul>
+  {% for note in notes %}
+  <li class="card note">
+    <h2>{{ note.title }}</h2>
+    <p>{{ note.text }}</p>
+    <small class="muted">{{ note.updated.strftime('%d.%m.%Y %H:%M') }}</small>
+    <div class="row">
+      <a class="button secondary" href="{{ url_for('edit', note_id=note.id) }}">Bearbeiten</a>
+      <form action="{{ url_for('delete', note_id=note.id) }}" method="post">
+        <button type="submit" class="danger">Löschen</button>
+      </form>
+    </div>
+  </li>
+  {% else %}
+  <p class="muted">Keine Notizen gefunden.</p>
+  {% endfor %}
+</ul>
+{% endblock %}
