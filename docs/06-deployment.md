@@ -35,9 +35,14 @@ Datei `.github/workflows/azure.yml`:
 
 1. Auslöser: neue Etikette `v*` (oder manuell)
 2. Job **test**: pytest gegen PostgreSQL
-3. Job **deploy** (nur nach grünem test): `azure/webapps-deploy` mit dem Secret
-   `AZURE_WEBAPP_PUBLISH_PROFILE`
-4. **Health-Check**: `curl https://razayou-notizen.azurewebsites.net/health`
+3. Job **deploy** (nur nach grünem test):
+   - bricht mit Fehler ab, wenn das Secret `AZURE_WEBAPP_PUBLISH_PROFILE` fehlt
+   - schreibt den Tag (z.B. `v2.1.0`) in die Datei `VERSION`
+   - lädt den Code mit `azure/webapps-deploy` auf Azure
+4. **Health-Check**: `/health` muss `"version": "<Tag>"` liefern – erst dann ist bewiesen,
+   dass genau diese Version ausgeliefert wurde. Sonst wird der Lauf rot.
+
+Nachweis: https://razayou-notizen.azurewebsites.net/health zeigt die live laufende Version.
 
 Einmalig: Azure Portal → `razayou-notizen` → *Download publish profile* →
 GitHub → *Settings → Secrets and variables → Actions* → `AZURE_WEBAPP_PUBLISH_PROFILE`.

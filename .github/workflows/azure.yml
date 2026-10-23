@@ -40,21 +40,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Secret vorhanden?
-        id: check
-        run: echo "ok=${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE != '' }}" >> $GITHUB_OUTPUT
-      - if: steps.check.outputs.ok != 'true'
-        run: echo "::warning::Secret AZURE_WEBAPP_PUBLISH_PROFILE fehlt - Deployment übersprungen"
-      - if: steps.check.outputs.ok == 'true'
-        uses: azure/webapps-deploy@v3
+        env:
+          PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        run: |
+          if [ -z "$PROFILE" ]; then
+            echo "::error::Secret AZURE_WEBAPP_PUBLISH_PROFILE fehlt - keine Auslieferung möglich"
+            exit 1
+          fi
+      - name: Version in die App schreiben
+        run: echo "${{ github.ref_name }}" > VERSION
+      - uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: .
-      - name: Health-Check
-        if: steps.check.outputs.ok == 'true'
+      - name: Health-Check (läuft die neue Version?)
         run: |
-          for i in $(seq 1 20); do
-            curl -sf https://razayou-notizen.azurewebsites.net/health && exit 0
+          for i in $(seq 1 30); do
+            body=$(curl -sf https://razayou-notizen.azurewebsites.net/health || true)
+            echo "$body"
+            echo "$body" | grep -q '"version":"${{ github.ref_name }}"' && exit 0
             sleep 15
           done
+          echo "::error::Neue Version ${{ github.ref_name }} ist nicht live"
           exit 1
