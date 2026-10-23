@@ -1,0 +1,23 @@
+# Lokale Umgebung: App + PostgreSQL mit einem Befehl starten
+#   docker compose up --build   ->  http://localhost:3000
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: notizen
+      POSTGRES_PASSWORD: notizen
+      POSTGRES_DB: notizen
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: postgres://notizen:notizen@db:5432/notizen
+    depends_on:
+      - db
+
+volumes:
+  db-data:
