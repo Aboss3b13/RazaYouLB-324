@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Datenbank und Geheimnisse
+instance/
+*.db
+.env
+
+# pyinstaller
+build/
+dist/
+
+# Editor / OS
+.DS_Store
+*.xlsx
