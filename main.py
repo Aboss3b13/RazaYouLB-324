@@ -74,7 +74,13 @@ def create_app(db_url=None):
 
     @app.route("/health")
     def health():
-        return {"status": "ok"}
+        # VERSION wird beim Deployment geschrieben (Nachweis, welche Version live ist)
+        version_file = os.path.join(os.path.dirname(__file__), "VERSION")
+        version = "dev"
+        if os.path.exists(version_file):
+            with open(version_file) as f:
+                version = f.read().strip()
+        return {"status": "ok", "version": version}
 
     return app
 

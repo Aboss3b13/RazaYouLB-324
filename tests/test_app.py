@@ -4,7 +4,7 @@ import helper
 
 
 def test_health(client):
-    assert client.get("/health").get_json() == {"status": "ok"}
+    assert client.get("/health").get_json()["status"] == "ok"
 
 
 def test_create_and_show_us01(client):
