@@ -1,0 +1,55 @@
+name: Release
+
+# Neue Etikette v* -> GitHub Release mit Quellcode + Windows-Exe, Docker-Image in GitHub Packages
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+
+  exe:
+    needs: release
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt pyinstaller
+      - run: pyinstaller -F --name notizen --add-data "templates;templates" --add-data "static;static" main.py
+      - name: Exe an Release anhängen
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload ${{ github.ref_name }} ./dist/notizen.exe
+
+  docker:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Kleinbuchstaben für den Image-Namen
+        id: lower
+        run: echo "repo=${REPO,,}" >> $GITHUB_OUTPUT
+        env:
+          REPO: ${{ github.repository }}
+        shell: bash
+      - run: |
+          IMAGE=ghcr.io/${{ steps.lower.outputs.repo }}
+          docker build -t $IMAGE:${{ github.ref_name }} -t $IMAGE:latest .
+          docker push --all-tags $IMAGE
