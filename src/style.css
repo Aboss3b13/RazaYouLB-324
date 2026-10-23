@@ -90,3 +90,7 @@ button.danger {
 .muted {
   color: #71717a;
 }
+
+.error {
+  color: #dc2626;
+}

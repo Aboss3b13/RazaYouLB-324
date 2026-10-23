@@ -1,7 +1,7 @@
-import { createNote, updateNote, deleteNote, searchNotes } from './notes.js';
-import { loadNotes, saveNotes } from './storage.js';
+import { searchNotes } from './notes.js';
+import { loadNotes, addNote, editNote, removeNote } from './storage.js';
 
-export function initApp(doc = document) {
+export async function initApp(doc = document) {
   const form = doc.getElementById('note-form');
   const idInput = doc.getElementById('note-id');
   const titleInput = doc.getElementById('note-title');
@@ -10,8 +10,21 @@ export function initApp(doc = document) {
   const search = doc.getElementById('search');
   const list = doc.getElementById('note-list');
   const empty = doc.getElementById('empty');
+  const error = doc.getElementById('error');
 
-  let notes = loadNotes();
+  let notes = [];
+
+  async function run(action) {
+    try {
+      error.hidden = true;
+      await action();
+      notes = await loadNotes();
+    } catch (err) {
+      error.textContent = err.message;
+      error.hidden = false;
+    }
+    render();
+  }
 
   function resetForm() {
     form.reset();
@@ -53,11 +66,7 @@ export function initApp(doc = document) {
           cancelBtn.hidden = false;
           titleInput.focus();
         }),
-        button('Löschen', 'danger delete', () => {
-          notes = deleteNote(notes, note.id);
-          saveNotes(notes);
-          render();
-        }),
+        button('Löschen', 'danger delete', () => run(() => removeNote(note.id))),
       );
 
       li.append(h2, p, small, row);
@@ -68,20 +77,17 @@ export function initApp(doc = document) {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (idInput.value) {
-      notes = updateNote(notes, idInput.value, titleInput.value, textInput.value);
-    } else {
-      notes = createNote(notes, titleInput.value, textInput.value);
-    }
-    saveNotes(notes);
+    const id = idInput.value;
+    const title = titleInput.value;
+    const text = textInput.value;
     resetForm();
-    render();
+    return run(() => (id ? editNote(id, title, text) : addNote(title, text)));
   });
 
   cancelBtn.addEventListener('click', resetForm);
   search.addEventListener('input', render);
 
-  render();
+  await run(async () => {});
 }
 
 if (!window.__TEST__) {
