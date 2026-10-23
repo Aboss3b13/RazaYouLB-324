@@ -1,0 +1,4 @@
+#!/bin/sh
+# Vor jedem Commit: Code prüfen und Tests ausführen
+echo "pre-commit: lint + test"
+npm run lint --silent && npm test --silent

@@ -1,0 +1,10 @@
+#!/bin/sh
+# Jede Commit-Message muss sich auf ein Issue beziehen, z.B. "#12" (Merges ausgenommen)
+msg=$(head -n1 "$1")
+case "$msg" in
+  Merge*) exit 0 ;;
+esac
+if ! grep -qE '#[0-9]+' "$1"; then
+  echo "commit-msg: Bitte ein Issue angeben, z.B. 'Suche verbessert #12'"
+  exit 1
+fi
