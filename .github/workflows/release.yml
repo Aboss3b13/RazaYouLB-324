@@ -21,8 +21,8 @@ jobs:
       - run: npm test
       - run: npm run build
 
-      # Artefakt 1: ZIP im GitHub Release
-      - run: cd dist && zip -r ../notizen-app-${{ github.ref_name }}.zip .
+      # Artefakt 1: ZIP im GitHub Release (Server + Oberfläche, starten mit: npm ci --omit=dev && npm start)
+      - run: zip -r notizen-app-${{ github.ref_name }}.zip server dist package.json package-lock.json .env.example
       - uses: softprops/action-gh-release@v2
         with:
           files: notizen-app-${{ github.ref_name }}.zip
