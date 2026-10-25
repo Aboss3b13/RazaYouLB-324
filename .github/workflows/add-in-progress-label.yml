@@ -1,12 +1,14 @@
 name: Label bei Meilenstein
 
-# Issue bekommt einen Meilenstein -> "status: in progress"
+# Offenes Issue bekommt einen Meilenstein -> "status: in progress"
 on:
   issues:
     types: [milestoned]
 
 jobs:
   add-label:
+    # Geschlossene Issues sind fertig, nicht "in Arbeit"
+    if: github.event.issue.state == 'open'
     runs-on: ubuntu-latest
     permissions:
       issues: write
