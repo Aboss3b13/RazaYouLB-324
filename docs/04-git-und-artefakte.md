@@ -25,8 +25,17 @@ Wir arbeiten zu zweit: **Abbas Raza** (Besitzer) und **Yucan You** (Collaborator
 6. Die **andere Person reviewt** (kommentiert, genehmigt).
 7. **Merge** in `main`, Branch wird gelöscht.
 
-Repository-Einstellungen: `main` geschützt (*Require a pull request*, CI muss grün sein),
-*Automatically delete head branches*.
+### So ist es tatsächlich gelaufen
+
+| Phase | Ablauf | Nachweis |
+| --- | --- | --- |
+| Aufbau (v2.0.0) | Feature-Branches mit Issue-Nummer, **lokal** mit `--no-ff` in `main` gemerged (noch ohne PR) | Merge-Commits `Merge feature/… #<Issue>` |
+| Erster Entwurf | JavaScript-Version, verworfen und durch Flask ersetzt | PRs #11–#15, Titel „[Verworfen] …“ |
+| Ab v2.1.0 | Jede Änderung als **Pull Request**, CI grün, **Review durch den Partner**, dann Merge | PR #17 (Review + Merge durch Yucan), PR für #18 |
+
+Den Branch-Schutz für `main` (*Require a pull request*, *Require approvals*, Status-Check **CI**)
+richtet der Besitzer unter *Settings → Branches* ein. Bis dahin ist der Ablauf eine Team-Regel,
+die wir seit PR #17 einhalten.
 
 **Merge-Konflikt:** Ändern zwei Branches dieselbe Zeile, zeigt GitHub einen Konflikt.
 Lösen im Browser (*Resolve conflicts*) oder lokal mit `git pull origin main`,

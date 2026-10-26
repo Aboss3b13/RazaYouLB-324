@@ -21,6 +21,10 @@
 4. Umsetzung im Branch `feature/<issue>-<name>`, Pull Request mit `Closes #<issue>`.
 5. Beim Merge wird das Issue automatisch geschlossen.
 
+**Nachweis:** In Issue #18 sieht man im Verlauf, wie `github-actions` nach der Zuweisung
+`status: new issue` entfernt und nach dem Setzen des Meilensteins `v2.2.0` das Label
+`status: in progress` hinzufügt (Läufe im Tab *Actions*: „Label bei Zuweisung“, „Label bei Meilenstein“).
+
 | Label | Bedeutung |
 | --- | --- |
 | `status: new issue` | Neu, muss eingeordnet werden |
