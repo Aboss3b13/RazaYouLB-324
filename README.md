@@ -10,6 +10,8 @@ Gespeichert wird in einer Datenbank (lokal SQLite, auf Azure PostgreSQL).
 
 **Live:** https://razayou-notizen.azurewebsites.net
 
+**GitHub:** https://github.com/Aboss3b13/RazaYouLB-324
+
 **Team:** Abbas Raza ([@Aboss3b13](https://github.com/Aboss3b13)) und Yucan You ([@mikepro100223](https://github.com/mikepro100223))
 
 ## Schnellstart
