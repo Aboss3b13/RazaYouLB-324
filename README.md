@@ -51,6 +51,7 @@ Issue -> Branch -> Commit (pre-commit: black, flake8, pytest, #Issue)
 | C1 | Git-Workflow, Versionierung, Artefakte | [04-git-und-artefakte.md](docs/04-git-und-artefakte.md) |
 | D1 | Tests und automatisierte Integration | [05-ci.md](docs/05-ci.md) |
 | E1 | Automatisierte Auslieferung (Azure) | [06-deployment.md](docs/06-deployment.md) |
+| A1–E1 | Reflexion (Team) | [07-reflexion.md](docs/07-reflexion.md) |
 
 ## Projektstruktur
 
